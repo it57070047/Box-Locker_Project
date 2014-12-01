@@ -40,8 +40,12 @@ class Frame(object):
             if year.get() > 0:
                 year.set(year.get() - 1)
         '''
+        timelocal = localtime()
+        day = timelocal[2]
+        month = timelocal[1]
+        year = timelocal[0]
         Label(self.root, text="SKIP DAY").place(x = 475, y = 55)
-        skipDay = Spinbox(self.root, from_=0, to=31).place(x = 535, y = 55, width = 35)
+        skipDay = Spinbox(self.root, from_=day, to=31).place(x = 535, y = 55, width = 35)
 ##        Button(self.root, text="v", command=onClick_Decreaseday, fg="yellow", bg = "black").place(x = 500, y = 65, width = 12, height = 12)
 ##        Button(self.root, text="^", command=onClick_Increaseday, fg="yellow", bg = "black").place(x = 500, y = 54, width = 12, height = 12)
 ##        Button(self.root, text="v", command=onClick_Decreasemonth, fg="yellow", bg = "black").place(x = 550, y = 65, width = 12, height = 12)
@@ -52,7 +56,7 @@ class Frame(object):
         number = []
         for i in xrange(1, 61):
             number.append(str(i))
-            
+        time = localtime()    
         block = 0
         right = 0
         down = 65
@@ -69,7 +73,7 @@ class Frame(object):
         self.root.mainloop()
         
     def clickBox(self, number):
-        #print number
+        print number
         Box(number)
 
 class Box(object):
