@@ -13,45 +13,18 @@ class Frame(object):
         self.label = Label(image = self.photo)
         self.label.image = self.photo # keep a reference!
         self.label.place(x = 350, y = 5)
-        Label(self.root, text=strftime('Today : %A %d %B %Y')).place(x = 100, y = 55)
-        '''
-        day = IntVar()
-        month = IntVar()
-        year = IntVar()
-        
-        def onClick_Increaseday(event=None):
-                day.set(day.get() + 1)
 
-        def onClick_Decreaseday(event=None):
-            if day.get() > 0:
-                day.set(day.get() - 1)
-
-        def onClick_Increasemonth(event=None):
-                month.set(month.get() + 1)
-
-        def onClick_Decreasemonth(event=None):
-            if month.get() > 0:
-                month.set(month.get() - 1)
-
-        def onClick_Increaseyear(event=None):
-                year.set(year.get() + 1)
-
-        def onClick_Decreaseyear(event=None):
-            if year.get() > 0:
-                year.set(year.get() - 1)
-        '''
+        skipDay = IntVar()
+        skip = IntVar()
         timelocal = localtime()
-        day = timelocal[2]
-        month = timelocal[1]
-        year = timelocal[0]
+        self.day_in_week = timelocal[3]
+        self.day = timelocal[2]
+        self.month = timelocal[1]
+        self.year = timelocal[0]
         Label(self.root, text="SKIP DAY").place(x = 475, y = 55)
-        skipDay = Spinbox(self.root, from_=day, to=31).place(x = 535, y = 55, width = 35)
-##        Button(self.root, text="v", command=onClick_Decreaseday, fg="yellow", bg = "black").place(x = 500, y = 65, width = 12, height = 12)
-##        Button(self.root, text="^", command=onClick_Increaseday, fg="yellow", bg = "black").place(x = 500, y = 54, width = 12, height = 12)
-##        Button(self.root, text="v", command=onClick_Decreasemonth, fg="yellow", bg = "black").place(x = 550, y = 65, width = 12, height = 12)
-##        Button(self.root, text="^", command=onClick_Increasemonth, fg="yellow", bg = "black").place(x = 550, y = 54, width = 12, height = 12)
-##        Button(self.root, text="v", command=onClick_Decreaseyear, fg="yellow", bg = "black").place(x = 600, y = 65, width = 12, height = 12)
-##        Button(self.root, text="^", command=onClick_Increaseyear, fg="yellow", bg = "black").place(x = 600, y = 54, width = 12, height = 12)
+        Spinbox(self.root, from_=self.day, to=32, textvariable = skipDay,  command = lambda: self.showDay(skipDay.get())).place(x = 535, y = 55, width = 35)
+        month_year = 'December 2014'
+        Label(self.root, text=strftime('Today :  %A %d ') + ('%s' % month_year)).place(x = 100, y = 55)
 
         number = []
         for i in xrange(1, 61):
@@ -81,6 +54,13 @@ class Frame(object):
         print number
         Box(number)
 
+    def showDay(self, v):
+        week = ['Wednessday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tueday']
+        month = ['December', 'January']
+        year = ['2014', '2015']
+        Label(self.root, text = ('%50s' % (' '*120))).place(x = 100, y = 55)
+        Label(self.root, text = ('Today : %s %s %s %s' % (week[(v - self.day)% 7], [v%32, 1][v%32==0], month[[0, 1][v>31]], year[[0, 1][v>31]]))).place(x = 100, y = 55)
+    
 class Box(object):
     def __init__(self, value):
         self.box = Tk()
