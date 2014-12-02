@@ -56,6 +56,9 @@ class Frame(object):
         number = []
         for i in xrange(1, 61):
             number.append(str(i))
+        self.button_value = [0]*61
+        self.colour = StringVar()
+        self.colour.set('White')
         time = localtime()    
         block = 0
         right = 0
@@ -65,14 +68,16 @@ class Frame(object):
             down += 80
             right = 0
             for j in xrange(10):
-                button_value = Button(self.root, text = block+1, command = lambda block=block : self.clickBox(block+1))
-                button_value.place(x = right, y = down, width = 80, height = 80)
+                self.button_value[block] = Button(self.root, text = block+1, command = lambda block=block : self.clickBox(block+1), bg = self.colour.get())
+                self.button_value[block].place(x = right, y = down, width = 80, height = 80)
                 right += 80
                 block += 1
 
         self.root.mainloop()
         
     def clickBox(self, number):
+        self.colour.set('White' if self.colour.get() != 'White' else 'Grey')
+        self.button_value[number-1].configure(bg='Grey')
         print number
         Box(number)
 
