@@ -68,7 +68,11 @@ class Box(object):
         self.box.resizable(width=FALSE, height=FALSE)
         self.box.title("Box Locker : " + str(value))
         Label(self.box, text = "Box : " + str(value)).place(x = 200, y = 35, anchor = CENTER)
+        Button(self.box, text = "Close", command = lambda: self.closeButton()).place(x = 200 ,y = 175, anchor = CENTER)
         self.box.mainloop()
+
+    def closeButton(self):
+        self.box.destroy()
 
 #--------------------------------------------------------------------------------------------------
 if __name__ == '__main__':
