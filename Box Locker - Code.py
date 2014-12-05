@@ -4,6 +4,7 @@ from time import *
 import sys
 
 listCustomer = ['---EMPTY---'] * 61
+listCountDayInBox = [(-1, 0)] * 61 # First:Count Day, Second: Begin Day
 class Frame(object):
     def __init__(self):               
         root = Tk()
@@ -54,7 +55,16 @@ class Frame(object):
     def clickBox(self, number, Today):
         self.colour.set('White' if self.colour.get() != 'White' else 'Grey')
         self.button_value[number-1].configure(bg='Grey')
-        print number, self.Today
+        tmp_week, DAY, tmp_month, tmp_year = self.Today.split()
+        DAY = int(DAY)
+        if listCountDayInBox[number][0] == -1:
+            listCountDayInBox[number] = 0, DAY
+        else:
+            if DAY > listCountDayInBox[number][1]:
+                listCountDayInBox[number] = (DAY - listCountDayInBox[number][1], listCountDayInBox[number][1])
+            elif DAY < listCountDayInBox[number][1]:
+                listCountDayInBox[number] = (listCountDayInBox[number][0] - 1, listCountDayInBox[number][1])
+        print number , self.Today, listCountDayInBox[number]
         Box(number, self.Today)
 
     def showDay(self, day, root, today):
@@ -64,7 +74,6 @@ class Frame(object):
         dayInWeek, Day, Month, Year = today.split()
         skip = day - int(Day)
         self.Today = week[(week.index(dayInWeek) + skip)%7] +' '+ str([day%32, 1][day%32==0]) +' '+ str(month[[0, 1][day>31]]) +' '+ str(year[[0, 1][day>31]])
-        print self.Today
         Label(root, text = ('%50s' % (' '*120))).place(x = 100, y = 55) #clear screen
         Label(root, text= 'Today : ' + self.Today).place(x = 100, y = 55)        
     
@@ -75,13 +84,12 @@ class Box(object):
         box.resizable(width=FALSE, height=FALSE)
         box.title("Box Locker : " + str(value))
         Label(box, text = "Box : " + str(value)).place(x = 200, y = 35, anchor = CENTER)
-
+        
         Label(box, text = "Name ", ).place(x = 125, y = 55, anchor = CENTER)
         self.name = StringVar(box)
         Entry(box, textvariable = self.name).place(x = 210, y = 55, anchor = CENTER)
-
+        
         Label(box, text = listCustomer[value]).place(x = 200, y = 105, anchor = CENTER)
-
         if listCustomer[value] == '---EMPTY---':
             Button(box, text = "Save", command = lambda: self.getData(self.name.get(), value, box, date)).place(x = 200 ,y = 175, anchor = CENTER)
         else:
@@ -97,7 +105,6 @@ class Box(object):
         year = ['2014', '2015']
         listCustomer[number] = ''
         expire_inweek, expire_day, expire_month, expire_year = today.split()
-        #print week[(week.index(expire_inweek) + 5) % 7]
         expireDay = ''
         expireDay += week[(week.index(expire_inweek) + 5) % 7] +' '+ str(int(expire_day)+5) +' '+ str(expire_month) +' '+str(expire_year)
         
