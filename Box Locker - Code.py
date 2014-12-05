@@ -3,7 +3,7 @@ from Tkinter import *
 from time import *
 import sys
 
-checkEmpty = ['---EMPTY---'] * 61
+listCustomer = ['---EMPTY---'] * 61
 class Frame(object):
     def __init__(self):               
         root = Tk()
@@ -18,15 +18,15 @@ class Frame(object):
         skipDay = IntVar()
         skip = IntVar()
         timelocal = localtime()
-        self.day_in_week = timelocal[3]
-        self.day = timelocal[2]
-        self.month = timelocal[1]
-        self.year = timelocal[0]
+        dayInWeek = strftime('%A ')
+        Day = strftime('%d ')
+        Month = strftime('%B ')
+        Year = strftime('%Y')
+        self.Today = dayInWeek + Day + Month + Year
         Label(root, text="SKIP DAY").place(x = 475, y = 55)
-        Spinbox(root, from_=self.day, to=32, textvariable = skipDay,  command = lambda: self.showDay(skipDay.get(), root)).place(x = 535, y = 55, width = 35)
-        month_year = 'December 2014'
-        Label(root, text=strftime('Today :  %A %d ') + ('%s' % month_year)).place(x = 100, y = 55)
-
+        Spinbox(root, from_= Day, to=32, textvariable = skipDay,  command = lambda: self.showDay(skipDay.get(), root, self.Today)).place(x = 535, y = 55, width = 35)
+        Label(root, text= 'Today : ' + self.Today).place(x = 100, y = 55)
+        
         number = []
         for i in xrange(1, 61):
             number.append(str(i))
@@ -42,7 +42,7 @@ class Frame(object):
             down += 80
             right = 0
             for j in xrange(10):
-                self.button_value[block] = Button(root, text = block+1, command = lambda block=block : self.clickBox(block+1), bg = self.colour.get())
+                self.button_value[block] = Button(root, text = block+1, command = lambda block=block : self.clickBox(block+1, self.Today), bg = self.colour.get())
                 self.button_value[block].place(x = right, y = down, width = 80, height = 80)
                 right += 80
                 block += 1
@@ -51,23 +51,22 @@ class Frame(object):
         root.mainloop()###
         ##################
         
-    def clickBox(self, number):
+    def clickBox(self, number, Today):
         self.colour.set('White' if self.colour.get() != 'White' else 'Grey')
         self.button_value[number-1].configure(bg='Grey')
-        dayInWeek = strftime('%A ')
-        Day = strftime('%d ')
-        Month = strftime('%B ')
-        Year = strftime('%Y')
-        Today = dayInWeek + Day + Month + Year
-        print number, Today
-        Box(number, Today)
+        print number, self.Today
+        Box(number, self.Today)
 
-    def showDay(self, day, root):
+    def showDay(self, day, root, today):
         week = ['Wednessday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tueday']
         month = ['December', 'January']
         year = ['2014', '2015']
-        Label(root, text = ('%50s' % (' '*120))).place(x = 100, y = 55)
-        Label(root, text = ('Today : %s %s %s %s' % (week[(day - self.day)% 7], [day%32, 1][day%32==0], month[[0, 1][day>31]], year[[0, 1][day>31]]))).place(x = 100, y = 55)
+        dayInWeek, Day, Month, Year = today.split()
+        skip = day - int(Day)
+        self.Today = week[(week.index(dayInWeek) + skip)%7] +' '+ str([day%32, 1][day%32==0]) +' '+ str(month[[0, 1][day>31]]) +' '+ str(year[[0, 1][day>31]])
+        print self.Today
+        Label(root, text = ('%50s' % (' '*120))).place(x = 100, y = 55) #clear screen
+        Label(root, text= 'Today : ' + self.Today).place(x = 100, y = 55)        
     
 class Box(object):
     def __init__(self, value, date):
@@ -81,9 +80,9 @@ class Box(object):
         self.name = StringVar(box)
         Entry(box, textvariable = self.name).place(x = 210, y = 55, anchor = CENTER)
 
-        Label(box, text = checkEmpty[value]).place(x = 200, y = 105, anchor = CENTER)
+        Label(box, text = listCustomer[value]).place(x = 200, y = 105, anchor = CENTER)
 
-        if checkEmpty[value] == '---EMPTY---':
+        if listCustomer[value] == '---EMPTY---':
             Button(box, text = "Save", command = lambda: self.getData(self.name.get(), value, box, date)).place(x = 200 ,y = 175, anchor = CENTER)
         else:
             Button(box, text = "Close", command = lambda: self.closeButton(box)).place(x = 200 ,y = 175, anchor = CENTER)
@@ -96,13 +95,13 @@ class Box(object):
         week = ['Wednessday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tueday']
         month = ['December', 'January']
         year = ['2014', '2015']
-        checkEmpty[number] = ''
+        listCustomer[number] = ''
         expire_inweek, expire_day, expire_month, expire_year = today.split()
         #print week[(week.index(expire_inweek) + 5) % 7]
         expireDay = ''
         expireDay += week[(week.index(expire_inweek) + 5) % 7] +' '+ str(int(expire_day)+5) +' '+ str(expire_month) +' '+str(expire_year)
         
-        checkEmpty[number] += 'Name : ' + name + '\n\nCheck In : ' + today + '\n\nExpire : ' + expireDay
+        listCustomer[number] += 'Name : ' + name + '\n\nCheck In : ' + today + '\n\nExpire : ' + expireDay
         box.destroy()
 
 #--------------------------------------------------------------------------------------------------
