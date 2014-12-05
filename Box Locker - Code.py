@@ -53,8 +53,6 @@ class Frame(object):
         ##################
         
     def clickBox(self, number, Today):
-        self.colour.set('White' if self.colour.get() != 'White' else 'Grey')
-        self.button_value[number-1].configure(bg='Grey')
         tmp_week, DAY, tmp_month, tmp_year = self.Today.split()
         DAY = int(DAY)
         if listCountDayInBox[number][0] == -1:
@@ -64,7 +62,18 @@ class Frame(object):
                 listCountDayInBox[number] = (DAY - listCountDayInBox[number][1], listCountDayInBox[number][1])
             elif DAY < listCountDayInBox[number][1]:
                 listCountDayInBox[number] = (listCountDayInBox[number][0] - 1, listCountDayInBox[number][1])
-        print number , self.Today, listCountDayInBox[number]
+
+        self.colour.set('White' if self.colour.get() != 'White' else 'GREY')
+        self.button_value[number-1].configure(bg='GREY')
+
+        if listCountDayInBox[number][0] == 3:
+            self.button_value[number-1].configure(bg='YELLOW')
+        elif listCountDayInBox[number][0] == 4:
+            self.button_value[number-1].configure(bg='ORANGE')
+        elif listCountDayInBox[number][0] >= 5:
+            self.button_value[number-1].configure(bg='RED')
+
+        print 'Box:'+ str(number), self.Today, listCountDayInBox[number]
         Box(number, self.Today)
 
     def showDay(self, day, root, today):
@@ -107,7 +116,6 @@ class Box(object):
         expire_inweek, expire_day, expire_month, expire_year = today.split()
         expireDay = ''
         expireDay += week[(week.index(expire_inweek) + 5) % 7] +' '+ str(int(expire_day)+5) +' '+ str(expire_month) +' '+str(expire_year)
-        
         listCustomer[number] += 'Name : ' + name + '\n\nCheck In : ' + today + '\n\nExpire : ' + expireDay
         box.destroy()
 
