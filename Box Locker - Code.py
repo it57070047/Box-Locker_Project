@@ -2,26 +2,20 @@
 from Tkinter import *
 from time import *
 import sys
-''' Global Valueable. '''
+
 listCustomer = ['---EMPTY---'] * 61
 listCountDayInBox = [(-1, 0)] * 61 # First:Count Day, Second: Begin Day
-listColorInBox = ['WHITE'] * 61
-#--------------------------------------------------------------------------------------------------------------------------------------
 class Frame(object):
-    def __init__(self):
-        ''' Initial Main Frame. '''
+    def __init__(self):               
         root = Tk()
-        root.geometry("800x630+100+20")
+        root.geometry("800x630")
         root.resizable(width=FALSE, height=FALSE)
         root.title("Box Locker")
-        #------------------------------------------------------------------------------------------------------------------------------
-        ''' LOGO Picture. '''
         self.photo = PhotoImage(file = "logo.gif")
         self.label = Label(image = self.photo)
         self.label.image = self.photo # keep a reference!
         self.label.place(x = 350, y = 5)
-        #------------------------------------------------------------------------------------------------------------------------------
-        ''' SET DATE. [Ref.Calendar in your PC]'''
+        root.config(bg="#222222")
         skipDay = IntVar()
         skip = IntVar()
         timelocal = localtime()
@@ -30,12 +24,11 @@ class Frame(object):
         Month = strftime('%B ')
         Year = strftime('%Y')
         self.Today = dayInWeek + Day + Month + Year
-        self.YesterDay = 0
-        Label(root, text="SKIP DAY", fg="white", bg="#222222").place(x = 475, y = 55)
-        Spinbox(root, from_= Day, to=32, textvariable = skipDay,  command = lambda: self.showDay(skipDay.get(), root, self.Today)).place(x = 535, y = 55, width = 35)
-        Label(root, text= 'Today : ' + self.Today, fg="white", bg="#222222").place(x = 100, y = 55)
-        #------------------------------------------------------------------------------------------------------------------------------
-        ''' Create 60 Boxs. '''
+        Label(root, text="SKIP DAY", fg="white", bg="#222222", font=13).place(x = 475, y = 75)
+        Spinbox(root, from_= Day, to=32, textvariable = skipDay, \
+                font=13, command = lambda: self.showDay(skipDay.get(), root, self.Today)).place(x = 565, y = 76, width = 35)
+        Label(root, text= 'Today : ' + self.Today, fg="white", bg="#222222", font=13).place(x = 100, y = 75)
+        
         number = []
         for i in xrange(1, 61):
             number.append(str(i))
@@ -47,6 +40,7 @@ class Frame(object):
         right = 0
         down = 65
         for i in xrange(6):
+            box = number[block]
             down += 80
             right = 0
             for j in xrange(10):
@@ -55,84 +49,53 @@ class Frame(object):
                 right += 80
                 block += 1
                 
-        #######MAIN#######
+        ##################
         root.mainloop()###
         ##################
         
     def clickBox(self, number, Today):
-        ''' Input: (Index of box, Date) -> Output:Send Index of box and Date to Class BOX.'''
-        
-        listColorInBox[number-1] = 'GREY'
-        dayInWeek, Day, Month, Year = Today.split()
-        if listCountDayInBox[number-1][0] == -1:
-                listCountDayInBox[number-1] = 0, int(Day)
+        tmp_week, DAY, tmp_month, tmp_year = self.Today.split()
+        DAY = int(DAY)
+        if listCountDayInBox[number][0] == -1:
+            listCountDayInBox[number] = 0, DAY
+        else:
+            if DAY > listCountDayInBox[number][1]:
+                listCountDayInBox[number] = (DAY - listCountDayInBox[number][1], listCountDayInBox[number][1])
+            elif DAY < listCountDayInBox[number][1]:
+                listCountDayInBox[number] = (listCountDayInBox[number][0] - 1, listCountDayInBox[number][1])
+
+        self.colour.set('White' if self.colour.get() != 'White' else 'GREY')
+        self.button_value[number-1].configure(bg='GREY')
+
+        if listCountDayInBox[number][0] == 3:
+            self.button_value[number-1].configure(bg='YELLOW')
+        elif listCountDayInBox[number][0] == 4:
+            self.button_value[number-1].configure(bg='ORANGE')
+        elif listCountDayInBox[number][0] >= 5:
+            self.button_value[number-1].configure(bg='RED')
+
+        print 'Box:'+ str(number), self.Today, listCountDayInBox[number]
         Box(number, self.Today)
 
     def showDay(self, day, root, today):
-        ''' Input: (day, root, date) -> Output: Show Date and Color of Box after click skipDay.'''
-        #------------------------------------------------------------------------------------------------------------------------------
-        ''' DATE : Skip Day [Next/Previous]. '''
         week = ['Wednessday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tueday']
         month = ['December', 'January']
         year = ['2014', '2015']
         dayInWeek, Day, Month, Year = today.split()
         skip = day - int(Day)
-        self.Today = week[(week.index(dayInWeek) + skip)%7] +' '+ str([day%32, 1][day%32==0]) +' '+ str(month[[0, 1][day>31]]) +' '+ str(year[[0, 1][day>31]])
-        Label(root, text = ('%50s' % (' '*120))).place(x = 100, y = 55) #clear old date.
-        Label(root, text= 'Today : ' + self.Today).place(x = 100, y = 55)
-        #------------------------------------------------------------------------------------------------------------------------------
-        ''' CountDay : Skip Day [Next/Previous]. '''
-        DAY = int(Day)
-        skipBOX = 0 #chk skipbox not Up/Down
-        for number in xrange(len(listCountDayInBox)):
-            if self.YesterDay <= day:
-                skipBOX = 1
-                if listCountDayInBox[number][0] >= 0:
-                    listCountDayInBox[number] = (DAY - listCountDayInBox[number][1], listCountDayInBox[number][1])
-            else:
-                skipBOX = 2
-                if listCountDayInBox[number][0] >= 0:
-                    listCountDayInBox[number] = ([listCountDayInBox[number][0] - 1, 0][listCountDayInBox[number][0] - 1 <= 0], listCountDayInBox[number][1])
-        if skipBOX == 1:
-            self.YesterDay = DAY + 1
-        elif skipBOX == 2:
-            self.YesterDay = DAY - 1
-        #------------------------------------------------------------------------------------------------------------------------------
-        ''' Set Condition Color in Box.'''
-        for number in xrange(len(listColorInBox)):
-            if 1 <= listCountDayInBox[number][0] < 2:
-                listColorInBox[number] = 'GREY'
-            elif listCountDayInBox[number][0] == 2:
-                listColorInBox[number] = 'YELLOW'
-            elif listCountDayInBox[number][0] == 3:
-                listColorInBox[number] = 'ORANGE'
-            elif listCountDayInBox[number][0] >= 4:
-                listColorInBox[number] = 'RED'
-        #------------------------------------------------------------------------------------------------------------------------------
-        ''' Update Color in Box '''
-        block = 0
-        right = 0
-        down = 65
-        for i in xrange(6):
-            down += 80
-            right = 0
-            for j in xrange(10):
-                self.button_value[block] = Button(root, text = block+1, command = lambda block=block : self.clickBox(block+1, self.Today), bg = listColorInBox[block])
-                self.button_value[block].place(x = right, y = down, width = 80, height = 80)
-                right += 80
-                block += 1
-
-#--------------------------------------------------------------------------------------------------------------------------------------
+        self.Today =  "%s %s %s %s" % \
+                     (week[(week.index(dayInWeek) + skip)%7], [day%32, 1][day%32==0], month[[0, 1][day>31]], year[[0, 1][day>31]])
+        Label(root, text = ('%50s' % (' '*120)), fg="white", bg="#222222").place(x = 100, y = 75) #clear screen
+        Label(root, text= "Today : %s" % self.Today, fg="white", bg="#222222", font=13).place(x = 100, y = 75)        
+    
 class Box(object):
     def __init__(self, value, date):
-        ''' Initial Box Frame. [Pop up] '''
         box = Tk()
-        box.geometry("400x230+950+50")
+        box.geometry("400x230")
         box.resizable(width=FALSE, height=FALSE)
         box.title("Box Locker : " + str(value))
         Label(box, text = "Box : " + str(value)).place(x = 200, y = 35, anchor = CENTER)
-        #------------------------------------------------------------------------------------------------------------------------------
-        ''' Input: Name. '''
+        
         Label(box, text = "Name ", ).place(x = 125, y = 55, anchor = CENTER)
         self.name = StringVar(box)
         Entry(box, textvariable = self.name).place(x = 210, y = 55, anchor = CENTER)
@@ -145,11 +108,9 @@ class Box(object):
         box.mainloop()
 
     def closeButton(self, box):
-        ''' Close Button. '''
         box.destroy()
 
     def getData(self, name, number, box, today):
-        ''' Detail customer. '''
         week = ['Wednessday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tueday']
         month = ['December', 'January']
         year = ['2014', '2015']
@@ -160,6 +121,6 @@ class Box(object):
         listCustomer[number] += 'Name : ' + name + '\n\nCheck In : ' + today + '\n\nExpire : ' + expireDay
         box.destroy()
 
-#--------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     Frame()
