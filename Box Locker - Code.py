@@ -44,7 +44,7 @@ class Frame(object):
             down += 80
             right = 0
             for j in xrange(10):
-                self.button_value[block] = Button(root, text = block+1, command = lambda block=block : self.clickBox(block+1, self.Today), bg = self.colour.get())
+                self.button_value[block] = Button(root, text = block+1, font=13, command = lambda block=block : self.clickBox(block+1, self.Today), bg = self.colour.get())
                 self.button_value[block].place(x = right, y = down, width = 80, height = 80)
                 right += 80
                 block += 1
