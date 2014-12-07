@@ -44,10 +44,18 @@ class Frame(object):
             down += 80
             right = 0
             for j in xrange(10):
-                self.button_value[block] = Button(root, text = block+1, font=13, command = lambda block=block : self.clickBox(block+1, self.Today), bg = self.colour.get())
+                if i % 2 != 0:
+                    self.button_value[block] = Button(root, text = block+1, font=13, \
+                                        command = lambda block=block : self.clickBox(block+1, self.Today), \
+                                        bg = "#2d89ef", borderwidth=0)
+                else:
+                    self.button_value[block] = Button(root, text = block+1, font=13, \
+                                        command = lambda block=block : self.clickBox(block+1, self.Today), \
+                                        bg = "#2b5797", borderwidth=0)
                 self.button_value[block].place(x = right, y = down, width = 80, height = 80)
                 right += 80
                 block += 1
+                
                 
         ##################
         root.mainloop()###
@@ -64,7 +72,7 @@ class Frame(object):
             elif DAY < listCountDayInBox[number][1]:
                 listCountDayInBox[number] = (listCountDayInBox[number][0] - 1, listCountDayInBox[number][1])
 
-        self.colour.set('White' if self.colour.get() != 'White' else 'GREY')
+        #self.colour.set('White' if self.colour.get() != 'White' else 'GREY')
         self.button_value[number-1].configure(bg='GREY')
 
         if listCountDayInBox[number][0] == 3:
