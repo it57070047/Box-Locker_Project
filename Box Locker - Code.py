@@ -33,8 +33,8 @@ class Frame(object):
         Year = strftime('%Y')
         self.Today = dayInWeek + str(Day) + Month + Year
         self.YesterDay = 0
-        Label(root, text="SKIP DAY", fg="white", bg="#222222").place(x = 475, y = 95)
-        Spinbox(root, from_= Day, to=32, textvariable = skipDay, command = lambda: self.showDay(skipDay.get(), root, self.Today)).place(x = 535, y = 95, width = 35)
+        Label(root, text="SKIP DAY", fg="white", bg="#222222", font = 13).place(x = 500, y = 95)
+        Spinbox(root, from_= Day, to=32, textvariable = skipDay, command = lambda: self.showDay(skipDay.get(), root, self.Today), font = 13).place(x = 580, y = 95, width = 40)
         Label(root, text= 'Today : ' + self.Today, fg="white", bg="#222222", font=13).place(x = 100, y = 95)
         #------------------------------------------------------------------------------------------------------------------------------
         ''' Create 60 Boxs. '''
