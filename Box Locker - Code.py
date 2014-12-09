@@ -74,7 +74,7 @@ class Frame(object):
         ''' Input: (day, root, date) -> Output: Show Date and Color of Box after click skipDay.'''
         #------------------------------------------------------------------------------------------------------------------------------
         ''' DATE : Skip Day [Next/Previous]. '''
-        week = ['Wednessday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tueday']
+        week = ['Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tueday']
         month = ['December', 'January']
         year = ['2014', '2015']
         dayInWeek, Day, Month, Year = today.split()
@@ -153,7 +153,7 @@ class Box(object):
 
     def getData(self, name, number, box, today):
         ''' Detail customer. '''
-        week = ['Wednessday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tueday']
+        week = ['Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tueday']
         month = ['December', 'January']
         year = ['2014', '2015']
         listCustomer[number] = ''
